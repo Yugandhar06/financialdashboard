@@ -1,0 +1,58 @@
+.users-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.users-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.users-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.users-subtitle {
+    color: var(--text-secondary);
+}
+
+.users-panel {
+    overflow: hidden;
+    padding: 1.5rem;
+}
+
+.users-select {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    width: auto;
+    display: inline-block;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.status-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.status-btn:hover {
+    opacity: 0.8;
+}
+
+.active-btn {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+}
+
+.inactive-btn {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+}

@@ -1,0 +1,3 @@
+/* Since the layout is identical to Login, we can reuse the same CSS mappings 
+   but localized to the Register component folder to keep the architecture decoupled. */
+@import '../Login/Login.css';

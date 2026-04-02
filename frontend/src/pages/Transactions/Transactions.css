@@ -1,0 +1,239 @@
+.tx-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tx-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tx-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.tx-subtitle {
+    color: var(--text-secondary);
+}
+
+.tx-panel {
+    overflow: hidden;
+}
+
+.tx-controls {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tx-search-box {
+    position: relative;
+    flex: 1;
+}
+
+.tx-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.tx-filter {
+    width: 200px;
+}
+
+.tx-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tx-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-income {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+}
+
+.badge-expense {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+}
+
+.tx-loading {
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    color: var(--accent-primary);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.tx-empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+
+.tx-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.tx-page-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.btn-page {
+    padding: 6px 16px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.btn-page:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-page:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Modal Styles */
+.tx-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.tx-modal {
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    position: relative;
+    border-radius: 12px;
+}
+
+.tx-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.tx-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.tx-modal-close:hover {
+    color: var(--text-primary);
+}
+
+.tx-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: var(--accent-primary);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+.btn-secondary {
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-secondary:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+/* Row Actions */
+.tx-row-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+.btn-icon {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.btn-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+.btn-icon.danger:hover {
+    color: var(--danger);
+}
