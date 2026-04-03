@@ -61,6 +61,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     // Auth endpoints are public — anyone can register/login
                     .requestMatchers("/api/auth/**").permitAll()
+                    // URL Level RBAC for Role-Based Dashboards
+                    .requestMatchers("/api/viewer/**").hasAnyRole("VIEWER", "ANALYST", "ADMIN")
+                    .requestMatchers("/api/analyst/**").hasAnyRole("ANALYST", "ADMIN")
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
                     // Everything else requires a valid JWT token
                     .anyRequest().authenticated()
             )

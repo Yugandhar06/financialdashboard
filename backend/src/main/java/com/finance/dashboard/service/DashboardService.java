@@ -3,8 +3,15 @@ package com.finance.dashboard.service;
 import com.finance.dashboard.dto.response.DashboardSummaryResponse;
 import com.finance.dashboard.dto.response.MonthlyTrendEntry;
 import com.finance.dashboard.dto.response.TransactionResponse;
+import com.finance.dashboard.dto.response.ViewerDashboardResponse;
+import com.finance.dashboard.dto.response.AnalystDashboardResponse;
+import com.finance.dashboard.dto.response.AdminDashboardResponse;
+import com.finance.dashboard.dto.response.UserResponse;
+import com.finance.dashboard.entity.User;
+import com.finance.dashboard.exception.ResourceNotFoundException;
 import com.finance.dashboard.enums.TransactionType;
 import com.finance.dashboard.repository.TransactionRepository;
+import com.finance.dashboard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +44,47 @@ import java.util.stream.Collectors;
 public class DashboardService {
 
     private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
+
+    // ── Role-Based Dashboard Methods ─────────────────────────────────────
+
+    public ViewerDashboardResponse getViewerDashboard(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + email));
+        
+        DashboardSummaryResponse summary = getSummary(); // We use the existing summary to get global totals/recent
+
+        return ViewerDashboardResponse.builder()
+                .profile(UserResponse.fromEntity(user))
+                .currentBalance(summary.getNetBalance())
+                .recentTransactions(summary.getRecentTransactions())
+                .build();
+    }
+
+    public AnalystDashboardResponse getAnalystDashboard(String email) {
+        ViewerDashboardResponse viewerData = getViewerDashboard(email);
+        DashboardSummaryResponse summary = getSummary();
+        List<MonthlyTrendEntry> trends = getMonthlyTrends(12);
+
+        return AnalystDashboardResponse.builder()
+                .profile(viewerData.getProfile())
+                .summary(summary)
+                .monthlyTrends(trends)
+                .build();
+    }
+
+    public AdminDashboardResponse getAdminDashboard(String email) {
+        AnalystDashboardResponse analystData = getAnalystDashboard(email);
+        long totalUsers = userRepository.count();
+        long totalTransactions = transactionRepository.count();
+
+        return AdminDashboardResponse.builder()
+                .analyticsData(analystData)
+                .totalUsers(totalUsers)
+                .activeUsers(userRepository.count()) // Should filter by active, simplification for now
+                .totalTransactions(totalTransactions)
+                .build();
+    }
 
     // ── Summary: Total Income, Expenses, Net Balance ─────────────────────
 

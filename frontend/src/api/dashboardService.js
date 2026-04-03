@@ -1,26 +1,15 @@
 import { apiClient } from './client';
 
 export const dashboardService = {
-  /**
-   * Hits GET /api/dashboard/summary
-   * Requires ANALYST or ADMIN role.
-   */
-  getSummary: async () => {
-    return apiClient.get('/dashboard/summary');
+  getViewerDashboard: async () => {
+    return apiClient.get('/viewer/dashboard');
   },
 
-  /**
-   * Hits GET /api/dashboard/monthly-trends
-   */
-  getMonthlyTrends: async (months = 6) => {
-    return apiClient.get('/dashboard/monthly-trends', { params: { months } });
+  getAnalystDashboard: async () => {
+    return apiClient.get('/analyst/dashboard');
   },
 
-  /**
-   * Hits GET /api/dashboard/recent
-   * Requires VIEWER, ANALYST, or ADMIN role.
-   */
-  getRecentActivity: async (limit = 10) => {
-    return apiClient.get('/dashboard/recent', { params: { limit } });
+  getAdminDashboard: async () => {
+    return apiClient.get('/admin/dashboard');
   }
 };

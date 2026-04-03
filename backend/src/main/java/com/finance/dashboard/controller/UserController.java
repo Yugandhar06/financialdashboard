@@ -26,7 +26,7 @@ import java.util.List;
  *   Layer 2: @PreAuthorize (are you authorized for THIS action?)
  */
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")    // Class-level: all methods require ADMIN
 public class UserController {

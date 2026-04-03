@@ -17,17 +17,19 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadDashboard() {
         try {
-            if (hasAnalyticsAccess) {
-                const [summaryRes, trendsRes] = await Promise.all([
-                    dashboardService.getSummary(),
-                    dashboardService.getMonthlyTrends(6)
-                ]);
-                setSummary(summaryRes.data);
-                setTrends(trendsRes.data);
+            if (user?.role === 'ADMIN') {
+                const res = await dashboardService.getAdminDashboard();
+                setSummary(res.data.analyticsData.summary);
+                setTrends(res.data.analyticsData.monthlyTrends);
+            } else if (user?.role === 'ANALYST') {
+                const res = await dashboardService.getAnalystDashboard();
+                setSummary(res.data.summary);
+                setTrends(res.data.monthlyTrends);
             } else {
                 // Viewer just loads recent activity
-                const recentRes = await dashboardService.getRecentActivity(10);
-                setSummary({ recentTransactions: recentRes.data });
+                const res = await dashboardService.getViewerDashboard();
+                setSummary({ recentTransactions: res.data.recentTransactions, netBalance: res.data.currentBalance });
+                setTrends([]);
             }
         } catch(e) {
             console.error("Dashboard error", e);
@@ -36,7 +38,7 @@ export default function Dashboard() {
         }
     }
     loadDashboard();
-  }, [hasAnalyticsAccess]);
+  }, [user]);
 
   if (loading) return <div className="dash-loading">Loading insights...</div>;
 

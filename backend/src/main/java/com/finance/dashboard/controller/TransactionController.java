@@ -32,7 +32,7 @@ import java.time.LocalDate;
  *   GET /api/transactions?type=EXPENSE&category=Food&startDate=2024-01-01&page=0&size=10
  */
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/api/admin/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
 
@@ -91,7 +91,7 @@ public class TransactionController {
      *   GET /api/transactions?category=food&page=1&size=5  → food, page 2
      */
     @GetMapping
-    @PreAuthorize("hasAnyRole('VIEWER', 'ANALYST', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<TransactionResponse>>> getTransactions(
             @RequestParam(required = false) TransactionType type,
             @RequestParam(required = false) String category,
@@ -118,7 +118,7 @@ public class TransactionController {
      * Error (404): { "success": false, "message": "Transaction not found with id: 99" }
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('VIEWER', 'ANALYST', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<TransactionResponse>> getTransactionById(
             @PathVariable Long id) {
 
