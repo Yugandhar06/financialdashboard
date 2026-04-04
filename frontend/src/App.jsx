@@ -5,6 +5,8 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Transactions from './pages/Transactions/Transactions';
+import Insights from './pages/Insights/Insights';
+import AuditLog from './pages/AuditLog/AuditLog';
 import Users from './pages/Users/Users';
 import Sidebar from './components/Sidebar/Sidebar';
 
@@ -50,7 +52,9 @@ function App() {
               <Routes>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/transactions" element={<Transactions />} />
+                <Route path="/transactions" element={user?.role === 'ANALYST' || user?.role === 'ADMIN' ? <Transactions /> : <Navigate to="/dashboard" />} />
+                <Route path="/insights" element={user?.role === 'ANALYST' || user?.role === 'ADMIN' ? <Insights /> : <Navigate to="/dashboard" />} />
+                <Route path="/audit-log" element={user?.role === 'ADMIN' ? <AuditLog /> : <Navigate to="/dashboard" />} />
                 <Route path="/users" element={user?.role === 'ADMIN' ? <Users /> : <Navigate to="/dashboard" />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>

@@ -20,13 +20,18 @@ import java.time.LocalDate;
 /**
  * TransactionController — financial record CRUD operations.
  *
- * ROLE-BASED ACCESS (enforced per method, not at class level):
+ * ROLE-BASED ACCESS CONTROL (RBAC):
  *
- * GET endpoints   → all authenticated roles (VIEWER, ANALYST, ADMIN)
- * POST/PUT/DELETE → ADMIN only
+ * VIEWER   → No access to transaction endpoints (dashboard only)
+ * ANALYST  → GET only (read transactions and records)
+ * ADMIN    → Full access (GET, POST, PUT, DELETE)
  *
- * This demonstrates fine-grained RBAC within a single controller.
- * Different actions on the same resource have different permission requirements.
+ * Access breakdown:
+ * GET  /api/admin/transactions     → ANALYST, ADMIN
+ * GET  /api/admin/transactions/{id} → ANALYST, ADMIN
+ * POST /api/admin/transactions     → ADMIN only
+ * PUT  /api/admin/transactions/{id} → ADMIN only
+ * DELETE /api/admin/transactions/{id} → ADMIN only
  *
  * Filtering is done via query parameters (all optional):
  *   GET /api/transactions?type=EXPENSE&category=Food&startDate=2024-01-01&page=0&size=10
@@ -91,7 +96,7 @@ public class TransactionController {
      *   GET /api/transactions?category=food&page=1&size=5  → food, page 2
      */
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ANALYST')")
     public ResponseEntity<ApiResponse<Page<TransactionResponse>>> getTransactions(
             @RequestParam(required = false) TransactionType type,
             @RequestParam(required = false) String category,
@@ -118,7 +123,7 @@ public class TransactionController {
      * Error (404): { "success": false, "message": "Transaction not found with id: 99" }
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ANALYST')")
     public ResponseEntity<ApiResponse<TransactionResponse>> getTransactionById(
             @PathVariable Long id) {
 

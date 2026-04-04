@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Receipt, Settings, LogOut, Briefcase, Users } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, LogOut, Briefcase, Users, Lightbulb, Shield } from 'lucide-react';
 import { AuthContext } from '../../App';
 import './Sidebar.css';
 
@@ -23,13 +23,25 @@ export default function Sidebar() {
           <span>Dashboard</span>
         </NavLink>
 
-        <NavLink 
-            to="/transactions" 
+        {(user?.role === 'ANALYST' || user?.role === 'ADMIN') && (
+          <NavLink 
+              to="/transactions" 
+              className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+          >
+            <Receipt size={20} />
+            <span>Transactions</span>
+          </NavLink>
+        )}
+
+        {(user?.role === 'ANALYST' || user?.role === 'ADMIN') && (
+          <NavLink 
+            to="/insights" 
             className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
-        >
-          <Receipt size={20} />
-          <span>Transactions</span>
-        </NavLink>
+          >
+            <Lightbulb size={20} />
+            <span>Insights</span>
+          </NavLink>
+        )}
 
         {user?.role === 'ADMIN' && (
           <NavLink 
@@ -38,6 +50,16 @@ export default function Sidebar() {
           >
             <Users size={20} />
             <span>Users</span>
+          </NavLink>
+        )}
+
+        {user?.role === 'ADMIN' && (
+          <NavLink 
+            to="/audit-log" 
+            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+          >
+            <Shield size={20} />
+            <span>Audit Trail</span>
           </NavLink>
         )}
 

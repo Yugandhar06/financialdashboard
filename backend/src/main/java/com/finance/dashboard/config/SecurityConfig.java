@@ -64,6 +64,11 @@ public class SecurityConfig {
                     // URL Level RBAC for Role-Based Dashboards
                     .requestMatchers("/api/viewer/**").hasAnyRole("VIEWER", "ANALYST", "ADMIN")
                     .requestMatchers("/api/analyst/**").hasAnyRole("ANALYST", "ADMIN")
+                    // Transactions: authenticated users can access (method-level @PreAuthorize handles role validation)
+                    .requestMatchers("/api/admin/transactions", "/api/admin/transactions/*").authenticated()
+                    // Users endpoint: ADMIN only (all operations)
+                    .requestMatchers("/api/admin/users/**").hasRole("ADMIN")
+                    // All other /api/admin/** endpoints require ADMIN
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")
                     // Everything else requires a valid JWT token
                     .anyRequest().authenticated()

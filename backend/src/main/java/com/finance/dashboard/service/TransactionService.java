@@ -44,6 +44,7 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
+    private final AuditLogService auditLogService;
 
     // ── CREATE ───────────────────────────────────────────────────────────
 
@@ -71,6 +72,10 @@ public class TransactionService {
         Transaction saved = transactionRepository.save(transaction);
         log.info("Transaction created: id={}, type={}, amount={} by user={}",
                 saved.getId(), saved.getType(), saved.getAmount(), currentUser.getEmail());
+
+        // Log this creation to the audit trail
+        auditLogService.logCreate(saved.getId(), "TRANSACTION", currentUser.getEmail(),
+                "Transaction created: " + saved.getCategory() + " - " + saved.getType());
 
         return TransactionResponse.fromEntity(saved);
     }
@@ -140,21 +145,32 @@ public class TransactionService {
     @Transactional
     public TransactionResponse updateTransaction(Long id, UpdateTransactionRequest request) {
         Transaction transaction = findActiveTransactionOrThrow(id);
+        User currentUser = getCurrentUser();
 
         // Apply only the changes that were actually provided
-        if (request.getAmount() != null) {
+        if (request.getAmount() != null && !transaction.getAmount().equals(request.getAmount())) {
+            auditLogService.logUpdate(transaction.getId(), "TRANSACTION", currentUser.getEmail(),
+                    "amount", transaction.getAmount().toString(), request.getAmount().toString());
             transaction.setAmount(request.getAmount());
         }
-        if (request.getType() != null) {
+        if (request.getType() != null && !transaction.getType().equals(request.getType())) {
+            auditLogService.logUpdate(transaction.getId(), "TRANSACTION", currentUser.getEmail(),
+                    "type", transaction.getType().toString(), request.getType().toString());
             transaction.setType(request.getType());
         }
-        if (request.getCategory() != null) {
+        if (request.getCategory() != null && !transaction.getCategory().equals(request.getCategory().trim())) {
+            auditLogService.logUpdate(transaction.getId(), "TRANSACTION", currentUser.getEmail(),
+                    "category", transaction.getCategory(), request.getCategory().trim());
             transaction.setCategory(request.getCategory().trim());
         }
-        if (request.getDate() != null) {
+        if (request.getDate() != null && !transaction.getDate().equals(request.getDate())) {
+            auditLogService.logUpdate(transaction.getId(), "TRANSACTION", currentUser.getEmail(),
+                    "date", transaction.getDate().toString(), request.getDate().toString());
             transaction.setDate(request.getDate());
         }
-        if (request.getNotes() != null) {
+        if (request.getNotes() != null && !transaction.getNotes().equals(request.getNotes())) {
+            auditLogService.logUpdate(transaction.getId(), "TRANSACTION", currentUser.getEmail(),
+                    "notes", transaction.getNotes(), request.getNotes());
             transaction.setNotes(request.getNotes());
         }
 
@@ -180,8 +196,15 @@ public class TransactionService {
     @Transactional
     public void deleteTransaction(Long id) {
         Transaction transaction = findActiveTransactionOrThrow(id);
+        User currentUser = getCurrentUser();
+        
         transaction.setIsDeleted(true);
         transactionRepository.save(transaction);
+        
+        // Log this deletion to the audit trail
+        auditLogService.logDelete(id, "TRANSACTION", currentUser.getEmail(),
+                "Transaction deleted: " + transaction.getCategory() + " - " + transaction.getType());
+        
         log.info("Transaction soft-deleted: id={}", id);
     }
 

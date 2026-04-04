@@ -79,8 +79,8 @@ export default function Transactions() {
                     <p className="tx-subtitle">View and trace all financial records.</p>
                 </div>
                 {isAdmin && (
-                    <button className="btn-primary" onClick={openNewModal} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Plus size={18} /> New Transaction
+                    <button className="btn-primary" onClick={openNewModal}>
+                        <Plus size={20} strokeWidth={2.5} /> New Transaction
                     </button>
                 )}
             </header>

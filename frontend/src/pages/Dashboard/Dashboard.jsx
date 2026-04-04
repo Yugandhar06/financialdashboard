@@ -88,17 +88,23 @@ export default function Dashboard() {
           {hasAnalyticsAccess && (
             <div className="glass-panel chart-panel">
                <h3 className="panel-title">Income vs Expense (6 Months)</h3>
-               <div className="chart-wrapper">
-                  <ResponsiveContainer width="100%" height="100%" minHeight={300}>
-                      <BarChart data={trends} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
-                          <XAxis dataKey="month" stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)'}} axisLine={false} tickLine={false} />
-                          <YAxis stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)'}} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
-                          <Tooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ backgroundColor: 'var(--bg-dark)', borderColor: 'var(--border-color)', borderRadius: '8px' }} />
-                          <Bar dataKey="income" fill="var(--success)" radius={[4, 4, 0, 0]} name="Income" />
-                          <Bar dataKey="expenses" fill="var(--danger)" radius={[4, 4, 0, 0]} name="Expenses" />
-                      </BarChart>
-                  </ResponsiveContainer>
+               <div className="chart-wrapper" style={{ position: 'relative' }}>
+                  {trends && trends.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={trends} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+                            <XAxis dataKey="month" stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)'}} axisLine={false} tickLine={false} />
+                            <YAxis stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)'}} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
+                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ backgroundColor: 'var(--bg-dark)', borderColor: 'var(--border-color)', borderRadius: '8px' }} />
+                            <Bar dataKey="income" fill="var(--success)" radius={[4, 4, 0, 0]} name="Income" />
+                            <Bar dataKey="expenses" fill="var(--danger)" radius={[4, 4, 0, 0]} name="Expenses" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-secondary)' }}>
+                      No data available
+                    </div>
+                  )}
                </div>
             </div>
           )}

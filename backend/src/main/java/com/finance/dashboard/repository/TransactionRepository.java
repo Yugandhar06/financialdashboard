@@ -110,4 +110,71 @@ public interface TransactionRepository
            "WHERE t.isDeleted = false " +
            "ORDER BY t.date DESC, t.createdAt DESC")
     List<Transaction> findRecentTransactions(Pageable pageable);
+
+    /**
+     * Total amount for a specific type within a date range.
+     * Used by InsightsService to compute monthly spending trends.
+     *
+     * @param type INCOME or EXPENSE
+     * @param startDate inclusive start date
+     * @param endDate inclusive end date
+     */
+    @Query("SELECT COALESCE(SUM(t.amount), 0) " +
+           "FROM Transaction t " +
+           "WHERE t.type = :type AND t.isDeleted = false " +
+           "AND t.date >= :startDate AND t.date <= :endDate")
+    BigDecimal getTotalByTypeInRange(@Param("type") TransactionType type,
+                                     @Param("startDate") LocalDate startDate,
+                                     @Param("endDate") LocalDate endDate);
+
+    /**
+     * Category totals within a date range.
+     * Used by InsightsService for monthly category analysis.
+     *
+     * Returns List<Object[]> where each element is [categoryName, total]
+     * sorted by total descending.
+     */
+    @Query("SELECT t.category, COALESCE(SUM(t.amount), 0) " +
+           "FROM Transaction t " +
+           "WHERE t.isDeleted = false " +
+           "AND t.date >= :startDate AND t.date <= :endDate " +
+           "GROUP BY t.category " +
+           "ORDER BY SUM(t.amount) DESC")
+    List<Object[]> getCategoryTotalsByDateRange(@Param("startDate") LocalDate startDate,
+                                                @Param("endDate") LocalDate endDate);
+
+    /**
+     * Total amount for a specific type within a date range, filtered by user.
+     * Used by InsightsService to compute monthly spending trends per user.
+     *
+     * @param userId the user's ID
+     * @param type INCOME or EXPENSE
+     * @param startDate inclusive start date
+     * @param endDate inclusive end date
+     */
+    @Query("SELECT COALESCE(SUM(t.amount), 0) " +
+           "FROM Transaction t " +
+           "WHERE t.user.id = :userId AND t.type = :type AND t.isDeleted = false " +
+           "AND t.date >= :startDate AND t.date <= :endDate")
+    BigDecimal getTotalByTypeInRangeForUser(@Param("userId") Long userId,
+                                            @Param("type") TransactionType type,
+                                            @Param("startDate") LocalDate startDate,
+                                            @Param("endDate") LocalDate endDate);
+
+    /**
+     * Category totals within a date range, filtered by user.
+     * Used by InsightsService for monthly category analysis per user.
+     *
+     * Returns List<Object[]> where each element is [categoryName, total]
+     * sorted by total descending.
+     */
+    @Query("SELECT t.category, COALESCE(SUM(t.amount), 0) " +
+           "FROM Transaction t " +
+           "WHERE t.user.id = :userId AND t.isDeleted = false " +
+           "AND t.date >= :startDate AND t.date <= :endDate " +
+           "GROUP BY t.category " +
+           "ORDER BY SUM(t.amount) DESC")
+    List<Object[]> getCategoryTotalsByDateRangeForUser(@Param("userId") Long userId,
+                                                       @Param("startDate") LocalDate startDate,
+                                                       @Param("endDate") LocalDate endDate);
 }
