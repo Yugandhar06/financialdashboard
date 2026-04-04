@@ -13,7 +13,7 @@ export const transactionService = {
         cleanParams[key] = value;
       }
     });
-    
+
     return apiClient.get('/admin/transactions', { params: cleanParams });
   },
 
